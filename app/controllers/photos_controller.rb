@@ -77,4 +77,10 @@ class PhotosController < ApplicationController
   def photo_params
     params.require(:photo).permit(:image, :comments_count, :likes_count, :caption, :owner_id)
   end
+
+  def ensure_user_is_authorized
+    if !PhotoPolicy.new(current_user, @photo).show?
+      raise Pundit::NotAuthorizedError, "not allowed"
+    end
+  end
 end
